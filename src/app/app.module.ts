@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgQrScannerModule } from 'angular2-qrscanner';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 import { AppComponent } from './app.component';
@@ -12,7 +11,7 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    ZXingScannerModule.forRoot(),
+    ZXingScannerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

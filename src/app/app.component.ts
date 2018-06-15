@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {QrScannerComponent} from 'angular2-qrscanner';
+import { Component, OnInit, ViewChild, VERSION } from '@angular/core';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import Result from '@zxing/library/esm5/core/Result';
 
@@ -8,23 +7,26 @@ import Result from '@zxing/library/esm5/core/Result';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+    ngVersion = VERSION.full;
+
     @ViewChild('scanner')
     scanner: ZXingScannerComponent;
 
     hasCameras = false;
+    hasPermission: boolean;
     qrResultString: string;
-    qrResult: Result;
-    scannerEnabled = true;
-    title = 'Khoa QR Scan App';
 
     availableDevices: MediaDeviceInfo[];
     selectedDevice: MediaDeviceInfo;
-
+    title = 'bestVN';
     ngOnInit(): void {
 
         this.scanner.camerasFound.subscribe((devices: MediaDeviceInfo[]) => {
             this.hasCameras = true;
+
+            console.log('Devices: ', devices);
+            this.availableDevices = devices;
 
             // selects the devices's back camera by default
             // for (const device of devices) {
@@ -36,15 +38,14 @@ export class AppComponent {
             // }
         });
 
-        this.scanner.scanComplete.subscribe((result: Result) => {
-            this.qrResult = result;
+        this.scanner.camerasNotFound.subscribe((devices: MediaDeviceInfo[]) => {
+            console.error('An error has occurred when trying to enumerate your video-stream-enabled devices.');
         });
 
-    }
+        this.scanner.permissionResponse.subscribe((answer: boolean) => {
+          this.hasPermission = answer;
+        });
 
-    displayCameras(cameras: MediaDeviceInfo[]) {
-        console.log('Devices: ', cameras);
-        this.availableDevices = cameras;
     }
 
     handleQrCodeResult(resultString: string) {
